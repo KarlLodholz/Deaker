@@ -4,7 +4,7 @@ from copy import deepcopy
 import numpy as np
 import matplotlib.pyplot as plt
 import sys
-import time
+# import time
 
 def intensity_map(img):
     # make black and white
@@ -13,10 +13,8 @@ def intensity_map(img):
     h, w = img.shape
     # intensity count for the img
     int_cnt = np.array([0]*256)
-    # print(file_str + ":" + str(w) + " x " + str(h))
     for y in range(h):
         for x in range(w):
-            # print(orig[y,x])
             int_cnt[img[y,x]] += 1
     return int_cnt
 
@@ -28,23 +26,18 @@ def edit(img, int_cnt, num_clr):
         # get width and height and depth
         h, w = img.shape
         # find the highest values in the int_cnt
-        # final number of colors
-        # t = time.time()
         peaks, _ = find_peaks(int_cnt, height=0)
-        # get peaks
+        # get largest peaks and sort them
         if(len(peaks) < num_clr):
             num_clr = len(peaks)
             print("color max:"+str(num_clr))
         srt_idx = np.argsort(_['peak_heights'])
         temp = srt_idx[-num_clr : ]
-        
         srt_int = [None]*num_clr
         for i in range(num_clr):
             srt_int[i] = peaks[temp[i]]
         srt_int = np.sort(srt_int)
-        # print(srt_int)
-        # print("-2- %s seconds ---" % (time.time() - t))
-        # t = time.time()
+
         # calculate ranges of intensities
         # init intensity ranges
         rng = []
@@ -70,14 +63,9 @@ def edit(img, int_cnt, num_clr):
         for y in range(h):
             for x in range(w):
                 img[y,x] = fill_int_ref[img[y,x]]
-        # print("-3- %s seconds ---" % (time.time() - t))
     return img
 
 if __name__ == "__main__":
-    # print(f"Arguments count: {len(sys.argv)}")
-    # for i, arg in enumerate(sys.argv):
-    #     print(f"Argument {i:>6}: {arg}")
-    
     # get file name from arguement
     file_str = sys.argv[1]
     strt = int(sys.argv[2]) if len(sys.argv) > 2 else 1
